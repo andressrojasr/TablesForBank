@@ -1,0 +1,102 @@
+.login-bg {
+  --background: #F5F5F5;
+  --padding-top: 0;
+  --padding-bottom: 0;
+}
+.center-wrapper {
+  display: flex;                 /* Activa Flexbox */
+  flex-direction: column;        /* Importante para centrar verticalmente */
+  justify-content: center;       /* Centrado vertical */
+  align-items: center;           /* Centrado horizontal */
+  height: 100%;                  /* Ocupa el 100% del contenido de ion-content */ 
+}
+
+.login-bg .scroll-content {
+  display: flex;                         /* Activar flexbox */ 
+  flex-direction: column;                /* Eje vertical */
+  justify-content: center;               /* Centrado vertical */ 
+  align-items: center;                   /* Centrado horizontal */
+  height: 100%;                          /* Ocupa todo el alto */
+}
+
+.login-bg ion-card {
+  margin: 0;                             /* Quita márgenes */
+}
+
+.login-card {
+  width: 90%;
+  max-width: 400px;
+  border-radius: 16px;
+  background: #FFFFFF; /* White card surface */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */ 
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0;
+  border-bottom: 1px solid #E0E0E0;
+}
+
+.logo {
+  width: 90px;
+  height: 90px;
+  margin-right: 12px;
+}
+
+.bank-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #002D72; /* Navy Blue primary */ 
+}
+
+.input-item {
+  --background: transparent;
+  --border-color: #009688; /* Teal secondary */ 
+  --box-shadow: none;
+  margin-top: 16px;
+
+  &.is-invalid {
+    --border-color: #E53935; /* Danger red for invalid */ 
+  }
+}
+
+ion-input {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.error-note {
+  margin-left: 16px;
+  font-size: 0.85rem;
+}
+
+.login-button {
+  margin: 24px 0 0;
+  --background: #FFC107; /* Golden Yellow accent */ 
+  --color: #212121; /* Dark Gray text */ 
+  border-radius: 8px;
+  transition: background 0.2s ease-in-out; /* Smooth hover */ 
+
+  &:hover {
+    --background: #FFA000; /* Darker yellow on hover */ 
+  }
+}
+
+.footer-links {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #757575; /* Gray secondary text */ 
+
+  a {
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #009688; /* Teal hover effect */ 
+    }
+  }
+}
