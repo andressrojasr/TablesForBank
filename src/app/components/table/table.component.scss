@@ -1,0 +1,71 @@
+
+.form-wrapper {
+    width: 100%;           /* Define ancho para el formulario */
+    max-width: 1000px;     /* Ancho máximo para pantallas grandes */
+    margin: 0 auto;       /* Centra horizontalmente */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px 0;
+  }
+  
+  .card-elevated {
+    border-radius: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    margin: 0 16px 24px;
+  }
+  
+  .card-header-custom {
+    background: #f0f8ff;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+  
+  .item-rounded {
+    --background: #fff;
+    border-radius: 12px;
+    margin: 8px 0;
+  }
+  
+  .segment-custom {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin: 8px 0;
+  }
+  
+  .submit-btn {
+    margin: 24px 0 0;
+    --background: #FFC107; /* Golden Yellow accent */ 
+    --color: #212121; /* Dark Gray text */ 
+    border-radius: 8px;
+    transition: background 0.2s ease-in-out; /* Smooth hover */ 
+  
+    &:hover {
+      --background: #FFA000; /* Darker yellow on hover */ 
+    }
+  }
+  
+  .error-msg {
+    margin: 4px 0 0 16px;
+    font-size: 0.9rem;
+  }
+
+  .card-content-custom{
+    height: 800px;
+  }
+
+  ::ng-deep .ag-paging-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #007acc; // azul elegante
+  }
+  
+.card-container{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
