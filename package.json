@@ -28,6 +28,8 @@
     "@capacitor/status-bar": "7.0.1",
     "@ionic/angular": "^8.0.0",
     "@supabase/supabase-js": "^2.49.4",
+    "ag-grid-angular": "^33.2.4",
+    "ag-grid-community": "^33.2.4",
     "ionicons": "^7.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
