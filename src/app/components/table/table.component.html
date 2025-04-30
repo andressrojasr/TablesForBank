@@ -1,3 +1,9 @@
+<ion-list>
+  <ion-item *ngFor="let credit of creditTypes">
+    <ion-label>{{ credit.name }}</ion-label>
+    <ion-button (click)="showCreditInfo(credit)" fill="outline">Ver Información</ion-button>
+  </ion-item>
+</ion-list>
 <form [formGroup]="creditForm" (ngSubmit)="generarAlemana()" class="form-wrapper">
   <ion-card class="card-elevated">
     <ion-card-header class="card-header-custom">
@@ -12,11 +18,32 @@
               <ion-icon name="wallet-outline" slot="start"></ion-icon>
               <ion-label>Tipo de Crédito</ion-label>
               <ion-select formControlName="creditType" placeholder="Seleccione">
-                <ion-select-option *ngFor="let ct of creditTypes" [value]="ct.value">
-                  {{ ct.label }}
+                <ion-select-option *ngFor="let ct of creditTypes" [value]="ct.id">
+                  {{ ct.name }}
                 </ion-select-option>
               </ion-select>
             </ion-item>
+          </ion-col>
+        </ion-row>
+
+        <!-- Tasa de interés -->
+        <ion-row *ngIf="showTasa">
+          <ion-col size="12">
+            <ion-item class="item-rounded">
+              <ion-icon name="trending-up" slot="start"></ion-icon>
+              <ion-label>Tasa de Interés</ion-label>
+              <ion-input
+                type="text"
+                formControlName="tasa"
+                inputmode="decimal"
+                placeholder="0.00%"
+                maxlength="4"
+                [disabled]="true"
+              ></ion-input>
+            </ion-item>
+            <ion-text color="danger" *ngIf="creditForm.get('tasa').touched && creditForm.get('tasa').invalid">
+              <p class="error-msg">Monto inválido (solo números y hasta 2 decimales).</p>
+            </ion-text>
           </ion-col>
         </ion-row>
 
@@ -34,7 +61,7 @@
               ></ion-input>
             </ion-item>
             <ion-text color="danger" *ngIf="creditForm.get('amount').touched && creditForm.get('amount').invalid">
-              <p class="error-msg">Monto inválido (solo números y hasta 2 decimales).</p>
+              <p class="error-msg">Monto inválido (solo números y hasta 2 decimales) Crédito mínimo de {{this.minCredit}} y máximo de {{this.maxCredit}}.</p>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -67,7 +94,8 @@
               ></ion-input>
             </ion-item>
             <ion-text color="danger" *ngIf="creditForm.get('term').touched && creditForm.get('term').invalid">
-              <p class="error-msg">Plazo inválido (1-{{ creditForm.get('termUnit').value==='years'?30:360 }}).</p>
+              <p *ngIf="creditForm.get('termUnit').value !== 'years'" class="error-msg">Plazo inválido ({{this.minTime}}-{{ this.maxTime }}).</p>
+              <p *ngIf="creditForm.get('termUnit').value === 'years'" class="error-msg">Plazo inválido ({{this.minTime/12}}-{{ this.maxTime/12 }}).</p>
             </ion-text>
           </ion-col>
         </ion-row>
@@ -105,7 +133,7 @@
         [rowData]="rowData"
         [columnDefs]="colDefs"
         [theme]="theme"
-        [pagination]="true"
+        [pagination]="paginationEnabled"
         [paginationPageSize]="10"
         [defaultColDef]="defaultColDef"
         >
