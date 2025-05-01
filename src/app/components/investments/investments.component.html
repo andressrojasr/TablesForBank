@@ -1,0 +1,63 @@
+<div class="deposit-page">
+  <div class="page-container">
+    <div class="hero">
+      <h1>Simulador de inversiones</h1>
+      <p>Inversiones para rentabilizar tu dinero según el monto y plazo que elijas. Desde $500 y 31 días.</p>
+    </div>
+
+    <div class="calculator-container">
+      <ion-card class="calculator-card">
+        <ion-card-content>
+          <div class="section">
+            <h2>Monto de inversión</h2>
+            <div class="amount-display">    
+              <ion-item lines="none">
+                <ion-input type="number" placeholder="00.00" [(ngModel)]="monto" (ionInput)="onMontoChange()"></ion-input>
+              </ion-item>
+            </div>
+            <p class="hint">Ingresa un monto entre $500 y $5'000.000</p>
+            
+          </div>
+
+          <div class="section">
+            <h2>Plazo del depósito</h2>
+            <ion-segment [(ngModel)]="modoPlazo" (ionChange)="onModoChange()" class="segment">
+              <ion-segment-button value="meses">
+                Meses
+              </ion-segment-button>
+              <ion-segment-button value="dias">
+                Días
+              </ion-segment-button>
+            </ion-segment>
+
+            <p class="sub-label">Elige el plazo en {{ modoPlazo }}</p>
+            <ion-item lines="none">
+              <ion-input type="number" placeholder="{{ modoPlazo === 'meses' ? 'Meses' : 'Días' }}" [(ngModel)]="plazoMeses" (ionInput)="calcular()"></ion-input>
+            </ion-item>
+          </div>
+
+          <div class="section result-section" *ngIf="ganancia != null">
+            <h2>El resultado de tu simulación:</h2>
+            <ion-card class="result-card">
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>
+                    <div class="result-header">En {{ plazoSeleccionado }} | Tasa {{ tasa * 100 | number:'1.2-2' }}%</div>
+                    <div class="ganancia">Ganas: {{ ganancia | currency:'USD':true:'1.2-2' }}</div>
+                    <div>Recibes al final: {{ monto + ganancia | currency:'USD':true:'1.2-2' }}</div>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-card>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
