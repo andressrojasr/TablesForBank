@@ -1,0 +1,62 @@
+<ion-content class="ion-padding">
+  <form>
+    <ng-container *ngFor="let campo of formConfig">
+
+      <ion-item *ngIf="campo.type !== 'select-multiple' && campo.type !== 'toggle'">
+        <ion-label position="floating">{{ campo.label }}</ion-label>
+        <ng-container [ngSwitch]="campo.type">
+
+          <ion-input
+            *ngSwitchCase="'text'"
+            [(ngModel)]="formData[campo.field]"
+            name="{{campo.field}}"
+            (ionInput)="validarCampoTexto($event, campo.field)">
+          </ion-input>
+
+          <ion-input
+          *ngSwitchCase="'number'"
+          type="text"
+          [inputmode]="campo.field === 'minTime' || campo.field === 'maxTime' ? 'numeric' : 'decimal'"
+          [(ngModel)]="formData[campo.field]"
+          name="{{campo.field}}"
+          (ionInput)="validarCampoNumerico($event, campo.field)"
+          (keydown)="restringirTeclas($event, campo.field)">
+        </ion-input>
+
+
+          <ion-textarea
+            *ngSwitchCase="'textarea'"
+            [(ngModel)]="formData[campo.field]"
+            name="{{campo.field}}">
+          </ion-textarea>
+        </ng-container>
+      </ion-item>
+
+      <ion-text color="danger" *ngIf="erroresCampos[campo.field]">
+        <p class="ion-padding-start">{{ erroresCampos[campo.field] }}</p>
+      </ion-text>
+
+
+      <ion-item *ngIf="campo.type === 'select-multiple'">
+        <ion-label>{{ campo.label }}</ion-label>
+        <ion-select [(ngModel)]="formData[campo.field]" name="{{campo.field}}" multiple="true">
+          <ion-select-option *ngFor="let opcion of campo.options" [value]="opcion.value">
+            {{ opcion.label }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item *ngIf="campo.type === 'toggle'">
+        <ion-label>{{ campo.label }}</ion-label>
+        <ion-toggle slot="end" [(ngModel)]="formData[campo.field]" name="{{campo.field}}"></ion-toggle>
+      </ion-item>
+
+    </ng-container>
+
+    <ion-button
+    expand="block"
+    class="ion-margin-top"
+    [disabled]="tieneErrores()"
+    (click)="guardar()">Guardar</ion-button>
+    </form>
+</ion-content>

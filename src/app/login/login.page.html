@@ -1,3 +1,57 @@
 <ion-content class="login-bg">
-  
+  <div class="center-wrapper">
+    <ion-card class="login-card">
+        <ion-card-header class="card-header">
+          <img [src]="logo" alt="Bank Logo" class="logo" />
+          <h1 class="bank-name">{{name}}</h1>
+        </ion-card-header>
+        <ion-card-content>
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <ion-item class="input-item">
+              <ion-label position="floating">Correo electrónico</ion-label>
+              <ion-input
+                type="email"
+                formControlName="email"
+                required
+                [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}">
+              </ion-input>
+            </ion-item>
+            <ion-note
+              *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched"
+              color="danger"
+              class="error-note">
+              Correo inválido
+            </ion-note>
+
+            <ion-item class="input-item">
+              <ion-label position="floating">Contraseña</ion-label>
+              <ion-input
+                type="password"
+                formControlName="password"
+                required
+                [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}">
+              </ion-input>
+            </ion-item>
+            <ion-note
+              *ngIf="loginForm.get('password')?.hasError('minlength') && loginForm.get('password')?.touched"
+              color="danger"
+              class="error-note">
+              Mínimo 6 caracteres
+            </ion-note>
+
+            <ion-button
+              expand="block"
+              type="submit"
+              [disabled]="loginForm.invalid"
+              class="login-button">
+              Iniciar Sesión
+            </ion-button>
+          </form>
+          <div class="footer-links">
+            <a (click)="onForgot()">Olvidé mi contraseña</a>
+            <a (click)="onRegister()">Registrarse</a>
+          </div>
+        </ion-card-content>
+    </ion-card>
+</div>
 </ion-content>

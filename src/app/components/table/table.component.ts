@@ -24,7 +24,7 @@ export class TableComponent  implements OnInit {
     { value: 'hipotecario', label: 'Crédito Hipotecario' },
     { value: 'automotriz', label: 'Crédito Automotriz' },
   ];
-  
+
   myTheme = themeQuartz.withParams({
     backgroundColor: '#f5f7fa',                   // Gris claro para fondo general
     foregroundColor: '#1a1a1a',                   // Texto oscuro para buena legibilidad
@@ -46,7 +46,7 @@ export class TableComponent  implements OnInit {
     minWidth: 100,
     filter: false,
   };
-  
+
   rowData = [];
 
   // Column Definitions: Defines the columns to be displayed.
@@ -122,12 +122,12 @@ export class TableComponent  implements OnInit {
     let saldo = monto;
     const amortizacion = monto / plazo;
     this.rowData = [];
-  
+
     for (let i = 1; i <= plazo; i++) {
       const interes = saldo * tasaMensual;
       const cuota = amortizacion + interes;
       saldo -= amortizacion;
-  
+
       this.rowData.push({
         numCuota: i,
         cuota: parseFloat(cuota.toFixed(2)),
@@ -141,15 +141,15 @@ export class TableComponent  implements OnInit {
   calcularAmortizacionFrancesa(monto: number, tasaMensual: number, plazo: number) {
     let saldo = monto;
     this.rowData = [];
-  
-    const cuota = monto * (tasaMensual * Math.pow(1 + tasaMensual, plazo)) / 
+
+    const cuota = monto * (tasaMensual * Math.pow(1 + tasaMensual, plazo)) /
                   (Math.pow(1 + tasaMensual, plazo) - 1);
-  
+
     for (let i = 1; i <= plazo; i++) {
       const interes = saldo * tasaMensual;
       const capital = cuota - interes;
       saldo -= capital;
-  
+
       this.rowData.push({
         numCuota: i,
         cuota: parseFloat(cuota.toFixed(2)),
@@ -170,7 +170,7 @@ export class TableComponent  implements OnInit {
       this.showTable = true;
     }
   }
-  
+
   generarFrancesa() {
     if (this.creditForm.valid) {
       const { amount, term } = this.creditForm.value;
@@ -184,24 +184,24 @@ export class TableComponent  implements OnInit {
 
   imprimirTabla() {
     const gridElement = this.agGridRef?.nativeElement;
-  
+
     if (!gridElement) {
       alert('No se encontró la tabla para imprimir.');
       return;
     }
-  
+
     const tablaHTML = gridElement.querySelector('.ag-root-wrapper')?.outerHTML;
-  
+
     if (!tablaHTML) {
       alert('La tabla aún no ha terminado de renderizarse.');
       return;
     }
-  
+
     // Datos del formulario
     const { amount, term, termUnit, creditType } = this.creditForm.value;
     const tasaAnual = 0.12; // O toma tu tasa real si es dinámica
     const tasaMensual = (tasaAnual / 12) * 100;
-  
+
     const ventana = window.open('', '', 'width=1200,height=800');
     if (ventana) {
       ventana.document.write(`
@@ -250,12 +250,12 @@ export class TableComponent  implements OnInit {
       `);
       ventana.document.close();
       ventana.focus();
-  
+
       setTimeout(() => {
         ventana.print();
         ventana.close();
       }, 1000);
     }
   }
-  
+
 }

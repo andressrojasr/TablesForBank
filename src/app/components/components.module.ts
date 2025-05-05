@@ -5,11 +5,13 @@ import { IonicModule } from '@ionic/angular';
 import { TableComponent } from './table/table.component';
 import { AgGridAngular } from 'ag-grid-angular';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { AgregarModalComponent } from './agregar-modal/agregar-modal.component';
+import { EditarModalComponent } from './editar-modal/editar-modal.component';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @NgModule({
-  declarations: [TableComponent],
+  declarations: [TableComponent, AgregarModalComponent,EditarModalComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -17,6 +19,6 @@ ModuleRegistry.registerModules([AllCommunityModule]);
     FormsModule,
     AgGridAngular,
   ],
-  exports: [TableComponent]
+  exports: [TableComponent, AgregarModalComponent, EditarModalComponent]
 })
 export class ComponentsModule { }
