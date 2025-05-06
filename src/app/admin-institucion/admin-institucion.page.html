@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Administrador de la institución</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Administrador de la institución</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Información del banco</ion-card-title>
+      <ion-buttons class="card-buttons">
+        <ion-button *ngIf="!editando" (click)="empezarEdicion()">
+          Editar
+        </ion-button>
+        <ion-button *ngIf="editando" [disabled]="nombreInvalido" (click)="guardarBanco()">
+          Guardar
+        </ion-button>
+      </ion-buttons>
+    </ion-card-header>
+
+    <ion-card-content class="ion-padding">
+      <h2 class="ion-text-center">{{banco.name}}</h2>
+      <div class="ion-text-center">
+        <ion-img
+          [src]="previewUrl || banco.logo"
+          alt="Logo del banco"
+          class="logo-banco">
+        </ion-img>
+      </div>
+
+      <ion-item *ngIf="editando">
+        <ion-label>Nuevo logo</ion-label>
+        <input type="file" (change)="onFileSelected($event)" />
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input
+        type="text"
+        [(ngModel)]="banco.name"
+        (ngModelChange)="validarNombreBanco($event)"
+        (ionInput)="validarNombreBanco($event)"
+        [readonly]="!editando"
+        maxlength="50"
+        placeholder="Nombre del banco"
+        (ionBlur)="validarNombreBanco($event)">
+      </ion-input>
+      <ion-text color="danger" *ngIf="nombreInvalido">
+        <small>{{ mensajeErrorNombre }}</small>
+      </ion-text>
+    </ion-item>
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,31 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Administrador</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">admin</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-tabs>
+    <ion-tab-bar slot="bottom">
+      <ion-tab-button  class="tab-button" tab="institucion">
+        <ion-icon name="business-outline"></ion-icon>
+        <ion-label>Configurar institución</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button class="tab-button" tab="creditos">
+        <ion-icon name="cash-outline"></ion-icon>
+        <ion-label>Configurar créditos</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button  class="tab-button" tab="cobros">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <ion-label>Configurar cobros</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+</ion-content>

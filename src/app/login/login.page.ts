@@ -20,7 +20,7 @@ export class LoginPage implements OnInit {
   supabase = inject(SupabaseService);
   navCtrl = inject(NavController);
   toastCtrl = inject(ToastController);
-  
+
   private bankChannel: any;
 
   ngOnInit(){
@@ -61,7 +61,7 @@ export class LoginPage implements OnInit {
       });
       await toast.present();
     } else {
-      this.navCtrl.navigateRoot('/user');
+      this.navCtrl.navigateRoot('/admin');
     }
   }
 
