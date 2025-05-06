@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administrar Tipos de Crédito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-button expand="block" (click)="abrirModalAgregar()" color="primary">
+    Agregar Tipo de Crédito
+  </ion-button>
+
+  <ion-list>
+    <ion-item *ngFor="let tipo of tiposCreditos; let i = index">
+      <ng-container *ngIf="editingCreditId === tipo.id; else vistaNormal">
+        <ion-input placeholder="Nombre" [(ngModel)]="editForm.name"></ion-input>
+        <ion-input type="number" placeholder="Tasa de Interés Anual" [(ngModel)]="editForm.anualRate"></ion-input>
+        <ion-input type="number" placeholder="Monto Mínimo" [(ngModel)]="editForm.minCredit"></ion-input>
+        <ion-input type="number" placeholder="Monto Máximo" [(ngModel)]="editForm.maxCredit"></ion-input>
+        <ion-input type="number" placeholder="Tiempo Mínimo(Meses)" [(ngModel)]="editForm.minTime"></ion-input>
+        <ion-input type="number" placeholder="Tiempo Máximo(Meses)" [(ngModel)]="editForm.maxTime"></ion-input>
+        <ion-textarea placeholder="Información" [(ngModel)]="editForm.information"></ion-textarea>
+
+        <ion-buttons slot="end">
+          <ion-button color="success" (click)="guardarEdicion()">Guardar</ion-button>
+          <ion-button color="medium" (click)="cancelarEdicion()">Cancelar</ion-button>
+        </ion-buttons>
+      </ng-container>
+
+      <ng-template #vistaNormal>
+        <ion-label (click)="verDetalle(tipo)" class="clickable">
+          {{ tipo.name }}
+        </ion-label>
+        <ion-buttons slot="end">
+          <ion-button (click)="editar(tipo)" color="secondary">Editar</ion-button>
+          <ion-button color="danger" (click)="eliminar(i)">Eliminar</ion-button>
+        </ion-buttons>
+      </ng-template>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="selectedCredit" class="ion-margin-top credit-card">
+    <ion-card-header>
+      <ion-card-title>{{ selectedCredit.name }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <div class="credit-details">
+        <p><strong>Tasa de Interés Anual:</strong> {{ selectedCredit.anualRate }}%</p>
+        <p><strong>Monto Mínimo:</strong> {{ selectedCredit.minCredit }}</p>
+        <p><strong>Monto Máximo:</strong> {{ selectedCredit.maxCredit }}</p>
+        <p><strong>Tiempo Mínimo:</strong> {{ selectedCredit.minTime }} meses</p>
+        <p><strong>Tiempo Máximo:</strong> {{ selectedCredit.maxTime }} meses</p>
+        <p><strong>Información:</strong> {{ selectedCredit.information }}</p>
+      </div>
+
+      <ion-list *ngIf="selectedCobros && selectedCobros.length > 0">
+        <ion-item-divider color="light">
+          <ion-label class="cobros-title">Cobros adicionales</ion-label>
+        </ion-item-divider>
+        <ion-item *ngFor="let cobro of selectedCobros">
+          <ion-label>{{ cobro.name }}</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ion-list *ngIf="selectedCobros && selectedCobros.length === 0">
+        <ion-item>
+          <ion-label>No hay cobros asociados</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

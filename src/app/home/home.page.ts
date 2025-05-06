@@ -22,7 +22,7 @@ export class HomePage {
 
 
   private bankChannel: any;
-  
+
   constructor() {}
 
   ngOnInit() {
@@ -35,7 +35,7 @@ export class HomePage {
     });
 
 
-    
+
   }
 
   onLogin() {
@@ -65,7 +65,7 @@ export class HomePage {
         this.bankChannel.unsubscribe();
       }
     }
-  
+
     private applyBankInfo(bank: Bank) {
       this.name = bank.name;
       this.logo = bank.logo;
