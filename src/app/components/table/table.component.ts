@@ -1,11 +1,13 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, IonCard, IonContent, ToastController } from '@ionic/angular';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, Theme, themeQuartz, GridApi } from 'ag-grid-community';
 import { Charge } from 'src/app/models/charge';
 import { Credit } from 'src/app/models/credit.model';
 import { SupabaseService } from 'src/app/services/supabase.service';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-table',
@@ -283,7 +285,45 @@ export class TableComponent  implements OnInit {
   }
 
   imprimirTabla() {
-    
+    // 1. Crea el documento
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: 'letter'
+    });
+
+    // 2. Prepara headers (nombres de columnas)
+    const headers = this.colDefs.map(col => col.headerName);
+
+    // 3. Prepara filas (datos)
+    const data = this.rowData.map(row =>
+      this.colDefs.map(col => {
+        const value = row[col.field];
+        // Formatea números si lo deseas:
+        return typeof value === 'number'
+          ? value.toLocaleString('es-EC', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          : value;
+      })
+    );
+
+    // 4. Genera la tabla en el PDF
+    autoTable(doc, {
+      head: [headers],
+      body: data,
+      startY: 40,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [22, 160, 133] },
+      theme: 'grid'
+    });
+
+    // 5. Añade un título
+    doc.setFontSize(14);
+    doc.text('Tabla de Amortización ' + this.typeTable, doc.internal.pageSize.getWidth() / 2, 20, {
+      align: 'center'
+    });
+
+    // 6. Guarda el PDF
+    doc.save(`tabla-amortizacion-${this.typeTable.toLowerCase()}.pdf`);
   }
 
   private async getCredits() {

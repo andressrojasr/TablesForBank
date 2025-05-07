@@ -1,3 +1,48 @@
+.top-section {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Responsive fallback */
+  gap: 35px;
+  padding: 16px;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.left-panel {
+  flex: 2.5;
+  min-width: 250px;
+  max-width: 800px;
+}
+
+.right-panel {
+  flex: 3;
+  min-width: 300px;
+  max-width: 900px;
+}
+.hero h1 {
+  font-size: 2rem;
+  color: #06356f;
+  margin-bottom: 8px;
+}
+.hero p {
+  margin-bottom: 16px;
+  color: #333;
+}
+
+/* Ya tienes form-wrapper y card-elevated definidos, no es necesario duplicarlos */
+
+@media screen and (max-width: 768px) {
+  .top-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .left-panel,
+  .right-panel {
+    max-width: 100%;
+  }
+}
 
 .form-wrapper {
     width: 100%;           /* Define ancho para el formulario */
@@ -68,4 +113,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.container-img{
+  text-align: center;
+  align-items: center;
+}
+
+img{
+  align-items: center;
+  width:50%;
+  height: auto;
+  border-radius: 12px;
 }
