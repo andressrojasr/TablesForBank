@@ -1,130 +1,149 @@
-<ion-list>
-  <ion-item *ngFor="let credit of creditTypes">
-    <ion-label>{{ credit.name }}</ion-label>
-    <ion-button (click)="showCreditInfo(credit)" fill="outline">Ver Información</ion-button>
-  </ion-item>
-</ion-list>
-<form [formGroup]="creditForm" (ngSubmit)="generarAlemana()" class="form-wrapper">
-  <ion-card class="card-elevated">
-    <ion-card-header class="card-header-custom">
-      <ion-card-title>Generar Tabla de Amortización</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-grid>
-        <!-- Tipo de Crédito -->
-        <ion-row>
-          <ion-col size="12">
-            <ion-item class="item-rounded">
-              <ion-icon name="wallet-outline" slot="start"></ion-icon>
-              <ion-label>Tipo de Crédito</ion-label>
-              <ion-select formControlName="creditType" placeholder="Seleccione">
-                <ion-select-option *ngFor="let ct of creditTypes" [value]="ct.id">
-                  {{ ct.name }}
-                </ion-select-option>
-              </ion-select>
-            </ion-item>
-          </ion-col>
-        </ion-row>
+<!-- Contenedor principal de la lista y el formulario -->
+<div class="top-section">
+  <!-- Lista de tipos de crédito -->
+  <div class="left-panel">
+    <div class="hero">
+      <h1>Simulador de créditos</h1>
+      <p>
+        Elija el tipo de crédito que mejor se adapte a sus necesidades financieras.
+      </p>
+      <div class="container-img">
+        <img src="https://www.gbsgroup.net/hubfs/Im%C3%A1genes%20para%20blogs/Refund-rafiki.png" alt="">
+      </div>
+    </div>
+    <ion-list>
+      <ion-item *ngFor="let credit of creditTypes">
+        <ion-label>{{ credit.name }}</ion-label>
+        <ion-button (click)="showCreditInfo(credit)" fill="outline">Ver Información</ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
 
-        <!-- Tasa de interés -->
-        <ion-row *ngIf="showTasa">
-          <ion-col size="12">
-            <ion-item class="item-rounded">
-              <ion-icon name="trending-up" slot="start"></ion-icon>
-              <ion-label>Tasa de Interés</ion-label>
-              <ion-input
-                type="text"
-                formControlName="tasa"
-                inputmode="decimal"
-                placeholder="0.00%"
-                maxlength="4"
-                [disabled]="true"
-              ></ion-input>
-            </ion-item>
-            <ion-text color="danger" *ngIf="creditForm.get('tasa').touched && creditForm.get('tasa').invalid">
-              <p class="error-msg">Monto inválido (solo números y hasta 2 decimales).</p>
-            </ion-text>
-          </ion-col>
-        </ion-row>
+  <!-- Formulario -->
+  <div class="right-panel">
+    <form [formGroup]="creditForm" (ngSubmit)="generarAlemana()" class="form-wrapper">
+      <ion-card class="card-elevated">
+        <ion-card-header class="card-header-custom">
+          <ion-card-title>Generar Tabla de Amortización</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-grid>
+            <!-- Tipo de Crédito -->
+            <ion-row>
+              <ion-col size="12">
+                <ion-item class="item-rounded">
+                  <ion-icon name="wallet-outline" slot="start"></ion-icon>
+                  <ion-label>Tipo de Crédito</ion-label>
+                  <ion-select formControlName="creditType" placeholder="Seleccione">
+                    <ion-select-option *ngFor="let ct of creditTypes" [value]="ct.id">
+                      {{ ct.name }}
+                    </ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+    
+            <!-- Tasa de interés -->
+            <ion-row *ngIf="showTasa">
+              <ion-col size="12">
+                <ion-item class="item-rounded">
+                  <ion-icon name="trending-up" slot="start"></ion-icon>
+                  <ion-label>Tasa de Interés</ion-label>
+                  <ion-input
+                    type="text"
+                    formControlName="tasa"
+                    inputmode="decimal"
+                    placeholder="0.00%"
+                    maxlength="4"
+                    [disabled]="true"
+                  ></ion-input>
+                </ion-item>
+                <ion-text color="danger" *ngIf="creditForm.get('tasa').touched && creditForm.get('tasa').invalid">
+                  <p class="error-msg">Monto inválido (solo números y hasta 2 decimales).</p>
+                </ion-text>
+              </ion-col>
+            </ion-row>
+    
+            <!-- Monto de Crédito -->
+            <ion-row *ngIf="showAmount">
+              <ion-col size="12">
+                <ion-item class="item-rounded">
+                  <ion-icon name="cash-outline" slot="start"></ion-icon>
+                  <ion-input
+                    type="text"
+                    formControlName="amount"
+                    inputmode="decimal"
+                    placeholder="0.00"
+                    maxlength="15"
+                  ></ion-input>
+                </ion-item>
+                <ion-text color="danger" *ngIf="creditForm.get('amount').touched && creditForm.get('amount').invalid">
+                  <p class="error-msg">Monto inválido (solo números y hasta 2 decimales) Crédito mínimo de {{this.minCredit}} y máximo de {{this.maxCredit}}.</p>
+                </ion-text>
+              </ion-col>
+            </ion-row>
+    
+            <!-- Unidad de Plazo -->
+            <ion-row *ngIf="showTermOption">
+              <ion-col size="12">
+                <ion-segment formControlName="termUnit" class="segment-custom">
+                  <ion-segment-button value="months">
+                    <ion-label>Meses</ion-label>
+                  </ion-segment-button>
+                  <ion-segment-button value="years">
+                    <ion-label>Años</ion-label>
+                  </ion-segment-button>
+                </ion-segment>
+              </ion-col>
+            </ion-row>
+    
+            <!-- Plazo -->
+            <ion-row *ngIf="showTerm">
+              <ion-col size="12">
+                <ion-item class="item-rounded">
+                  <ion-icon name="calendar-outline" slot="start"></ion-icon>
+                  <ion-input
+                    type="number"
+                    formControlName="term"
+                    [min]="creditForm.get('termUnit').value==='years'?1:1"
+                    [max]="creditForm.get('termUnit').value==='years'?30:360"
+                    placeholder="{{ creditForm.get('termUnit').value==='years' ? 'Años' : 'Meses' }}"
+                  ></ion-input>
+                </ion-item>
+                <ion-text color="danger" *ngIf="creditForm.get('term').touched && creditForm.get('term').invalid">
+                  <p *ngIf="creditForm.get('termUnit').value !== 'years'" class="error-msg">Plazo inválido ({{this.minTime}}-{{ this.maxTime }}).</p>
+                  <p *ngIf="creditForm.get('termUnit').value === 'years'" class="error-msg">Plazo inválido ({{this.minTime/12 | number:'1.1-1'}}-{{ this.maxTime/12 | number:'1.1-1' }}).</p>
+                </ion-text>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-card-content>
+      </ion-card>
+    
+      <ion-row>
+        <ion-col size="6">
+          <ion-button expand="full" type="button" (click)="generarAlemana()" [disabled]="!creditForm.valid" class="submit-btn">
+            <ion-icon name="send-outline" slot="start"></ion-icon>
+            Generar Amortización Alemana
+          </ion-button>
+        </ion-col>
+        <ion-col size="6">
+          <ion-button expand="full" type="button" (click)="generarFrancesa()" [disabled]="!creditForm.valid" class="submit-btn">
+            <ion-icon name="send-outline" slot="start"></ion-icon>
+            Generar Amortización Francesa
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </form>
+  </div>
+</div>
 
-        <!-- Monto de Crédito -->
-        <ion-row *ngIf="showAmount">
-          <ion-col size="12">
-            <ion-item class="item-rounded">
-              <ion-icon name="cash-outline" slot="start"></ion-icon>
-              <ion-input
-                type="text"
-                formControlName="amount"
-                inputmode="decimal"
-                placeholder="0.00"
-                maxlength="15"
-              ></ion-input>
-            </ion-item>
-            <ion-text color="danger" *ngIf="creditForm.get('amount').touched && creditForm.get('amount').invalid">
-              <p class="error-msg">Monto inválido (solo números y hasta 2 decimales) Crédito mínimo de {{this.minCredit}} y máximo de {{this.maxCredit}}.</p>
-            </ion-text>
-          </ion-col>
-        </ion-row>
-
-        <!-- Unidad de Plazo -->
-        <ion-row *ngIf="showTermOption">
-          <ion-col size="12">
-            <ion-segment formControlName="termUnit" class="segment-custom">
-              <ion-segment-button value="months">
-                <ion-label>Meses</ion-label>
-              </ion-segment-button>
-              <ion-segment-button value="years">
-                <ion-label>Años</ion-label>
-              </ion-segment-button>
-            </ion-segment>
-          </ion-col>
-        </ion-row>
-
-        <!-- Plazo -->
-        <ion-row *ngIf="showTerm">
-          <ion-col size="12">
-            <ion-item class="item-rounded">
-              <ion-icon name="calendar-outline" slot="start"></ion-icon>
-              <ion-input
-                type="number"
-                formControlName="term"
-                [min]="creditForm.get('termUnit').value==='years'?1:1"
-                [max]="creditForm.get('termUnit').value==='years'?30:360"
-                placeholder="{{ creditForm.get('termUnit').value==='years' ? 'Años' : 'Meses' }}"
-              ></ion-input>
-            </ion-item>
-            <ion-text color="danger" *ngIf="creditForm.get('term').touched && creditForm.get('term').invalid">
-              <p *ngIf="creditForm.get('termUnit').value !== 'years'" class="error-msg">Plazo inválido ({{this.minTime}}-{{ this.maxTime }}).</p>
-              <p *ngIf="creditForm.get('termUnit').value === 'years'" class="error-msg">Plazo inválido ({{this.minTime/12}}-{{ this.maxTime/12 }}).</p>
-            </ion-text>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
-    </ion-card-content>
-  </ion-card>
-
-  <ion-row>
-    <ion-col size="6">
-      <ion-button expand="full" type="button" (click)="generarAlemana()" [disabled]="!creditForm.valid" class="submit-btn">
-        <ion-icon name="send-outline" slot="start"></ion-icon>
-        Generar Amortización Alemana
-      </ion-button>
-    </ion-col>
-    <ion-col size="6">
-      <ion-button expand="full" type="button" (click)="generarFrancesa()" [disabled]="!creditForm.valid" class="submit-btn">
-        <ion-icon name="send-outline" slot="start"></ion-icon>
-        Generar Amortización Francesa
-      </ion-button>
-    </ion-col>
-  </ion-row>
-  
-</form>
+<!-- Tabla de amortización debajo -->
 <ion-card class="card-elevated" *ngIf="showTable">
   <ion-card-header class="card-header-custom">
     <ion-card-title>Tabla de Amortización {{typeTable}}</ion-card-title>
   </ion-card-header>
-  <ion-card-content >
-    <!-- ...otros campos del formulario -->
+  <ion-card-content>
     <div style="width: 100%; height: 520px; margin-top: 16px;">
       <ag-grid-angular
         #agGrid
@@ -136,12 +155,12 @@
         [pagination]="paginationEnabled"
         [paginationPageSize]="10"
         [defaultColDef]="defaultColDef"
-        >
+      >
       </ag-grid-angular>
     </div>
   </ion-card-content>
   <ion-button (click)="imprimirTabla()">
     <ion-icon name="print-outline" slot="start"></ion-icon>
-    Imprimir Tabla
+    Generar PDF
   </ion-button>
 </ion-card>

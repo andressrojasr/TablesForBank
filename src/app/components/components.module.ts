@@ -8,11 +8,13 @@ import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import { InvestmentsComponent } from './investments/investments.component';
 import { AgregarModalComponent } from './agregar-modal/agregar-modal.component';
 import { EditarModalComponent } from './editar-modal/editar-modal.component';
+import { FormInversionComponent } from './form-inversion/form-inversion.component';
+import { IonCard, IonCardContent, IonItem, IonInput, IonSelect, IonSelectOption, IonSegment, IonSegmentButton, IonLabel, IonList } from '@ionic/angular';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 @NgModule({
-  declarations: [TableComponent, InvestmentsComponent, AgregarModalComponent,EditarModalComponent],
+  declarations: [TableComponent, InvestmentsComponent, AgregarModalComponent,EditarModalComponent, FormInversionComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -20,6 +22,6 @@ ModuleRegistry.registerModules([AllCommunityModule]);
     FormsModule,
     AgGridAngular,
   ],
-  exports: [TableComponent, InvestmentsComponent, AgregarModalComponent, EditarModalComponent]
+  exports: [TableComponent, InvestmentsComponent, AgregarModalComponent, EditarModalComponent, FormInversionComponent]
 })
 export class ComponentsModule { }

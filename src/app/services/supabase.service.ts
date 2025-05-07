@@ -67,6 +67,28 @@ export class SupabaseService {
     return { data, error };
   }
 
+  async getChargesForCredit(id: Number)
+    : Promise<{ data?: Charge[]; error?: PostgrestError }> {
+
+    const { data, error } = await this.supabase
+      .from('credito_cobro')
+      .select('charges(*)')
+      .eq('credito_id', id);
+
+    if (error) {
+      return { error };
+    }
+    if (!data) {
+      return { data: [] };
+    }
+
+    const charges: Charge[] = data
+      .map(row => row.charges)
+      .flat();
+    return { data: charges };
+  }
+
+
   subscribeToCreditChanges(callback: (payload: any) => void) {
     const channel = this.supabase.channel('public:credits');
 
@@ -214,7 +236,78 @@ getClient() {
 }
 
 
+getClient() {
+  return this.supabase; // o como hayas nombrado tu instancia de Supabase
+}
 
 
+// Metodos Inversiones
+async getInvestments(): Promise<{ data?: any[], error?: any }> {
+  const { data, error } = await this.supabase
+    .from('investments')
+    .select('*');
+  return { data, error };
+}
+// Obtener Inversion por ID
+async getInvestmentById(id: string): Promise<{ data?: any, error?: any }> {
+  const { data, error } = await this.supabase
+    .from('investments')
+    .select('*')
+    .eq('id', id)
+    .single();
+  return { data, error };
+}
+// Crear Inversion
+async createInvestment(investmentData: {
+  investment_type: string;
+  interest_rate: number;
+  min_amount: number;
+  max_amount: number;
+  min_duration: number;
+  max_duration: number;
+}): Promise<{ data?: any, error?: any }> {
+  const { data, error } = await this.supabase
+    .from('investments')
+    .insert([investmentData])
+    .select();
+  return { data: data ? data[0] : null, error };
+}
+//Actualizar Inversion
+async updateInvestment(
+  id: string,
+  updateData: Partial<{
+    investment_type: string;
+    interest_rate: number;
+    min_amount: number;
+    max_amount: number;
+    min_duration: number;
+    max_duration: number;
+  }>
+): Promise<{ error?: any }> {
+  const { error } = await this.supabase
+    .from('investments')
+    .update(updateData)
+    .eq('id', id);
+  return { error };
+}
+//Eliminar Inversion
+async deleteInvestment(id: string): Promise<{ error?: any }> {
+  const { error } = await this.supabase
+    .from('investments')
+    .delete()
+    .eq('id', id);
+  return { error };
+}
+
+subscribeToInvestmentsChanges(callback: (payload: any) => void) {
+  return this.supabase
+    .channel('public:investments')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'investments' },
+      callback
+    )
+    .subscribe();
+}
 
 }

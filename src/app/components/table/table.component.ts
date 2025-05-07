@@ -1,9 +1,13 @@
 import { Component, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, IonCard, IonContent, ToastController } from '@ionic/angular';
+import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, Theme, themeQuartz, GridApi } from 'ag-grid-community';
+import { Charge } from 'src/app/models/charge';
 import { Credit } from 'src/app/models/credit.model';
 import { SupabaseService } from 'src/app/services/supabase.service';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 @Component({
   selector: 'app-table',
@@ -12,12 +16,11 @@ import { SupabaseService } from 'src/app/services/supabase.service';
   standalone: false,
 })
 export class TableComponent  implements OnInit {
-  @ViewChild('agGrid', { read: ElementRef }) agGridRef!: ElementRef;
+  @ViewChild('agGrid') agGrid!: AgGridAngular;
   fb = inject(FormBuilder);
   supabase = inject(SupabaseService);
   toastCtrl = inject(ToastController);
   alertCtrl = inject(AlertController);
-
   creditForm: FormGroup;
   showTasa = false;
   showAmount = false;
@@ -37,6 +40,7 @@ export class TableComponent  implements OnInit {
   creditChannel: any;
 
   creditTypes: Credit[] = [];
+  chargesForCredit: Charge[] = [];
   
   myTheme = themeQuartz.withParams({
     backgroundColor: '#f5f7fa',                   // Gris claro para fondo general
@@ -63,13 +67,15 @@ export class TableComponent  implements OnInit {
   rowData = [];
 
   // Column Definitions: Defines the columns to be displayed.
-  colDefs: ColDef[] = [
+  baseColDefs: ColDef[] = [
     { field: "numCuota", headerName: "Número de cuota" },
     { field: "cuota", headerName: "Cuota" },
     { field: "interes", headerName: "Interés" },
     { field: "capital", headerName: "Capital" },
     { field: "saldo", headerName: "Saldo" },
   ];
+
+  colDefs: ColDef[] = [...this.baseColDefs];
   constructor() { }
 
   async ngOnInit() {
@@ -109,6 +115,7 @@ export class TableComponent  implements OnInit {
     this.creditForm.get('creditType').valueChanges.subscribe(val => {
       if (val) {
         let credit: Credit = this.creditTypes.find(credit => credit.id === val)
+        this.showTable = false;
         this.tasa= credit.anualRate;
         this.creditForm.get('tasa').setValue(this.tasa+'%');
         this.minCredit = credit.minCredit;
@@ -116,6 +123,17 @@ export class TableComponent  implements OnInit {
         this.minTime = credit.minTime;
         this.maxTime = credit.maxTime;
         this.showTasa = true;
+        this.chargesForCredit = [];
+        this.colDefs = [...this.baseColDefs];
+        this.creditForm.get('amount').setValue('');
+        this.creditForm.get('term').setValue('');
+        this.getCreditCharge(credit.id).then(() => {
+          this.buildChargeColumns();
+          this.agGrid.api.redrawRows();
+          this.agGrid.api.refreshCells({ force: true });
+          this.agGrid.api.refreshHeader();
+        })
+        console.log(this.colDefs);
         this.creditForm.get('amount').setValidators([
           Validators.required,
           Validators.pattern(/^\d+(\.\d{1,2})?$/),
@@ -154,8 +172,9 @@ export class TableComponent  implements OnInit {
         let min = this.minTime;
         let max = this.maxTime;
         if (unit === 'years') {
-          min = this.minTime /12;
-          max = this.maxTime /12;
+          min = parseFloat((this.minTime/12).toFixed(0))
+          max = parseFloat((this.maxTime/12).toFixed(0));
+          
         }
         this.creditForm.get('term').setValidators([
           Validators.required,
@@ -172,26 +191,50 @@ export class TableComponent  implements OnInit {
     let saldo = monto;
     const amortizacion = monto / plazo;
     this.rowData = [];
-
+  
+    // Pre-cálculo de cargos por periodo
+    const perPeriodCharges = this.chargesForCredit.map(charge => {
+      const total = charge.isPercentage
+        ? monto * (charge.value / 100)
+        : charge.value;
+      return total / plazo;
+    });
+  
     for (let i = 1; i <= plazo; i++) {
       const interes = saldo * tasaMensual;
-      const cuota = amortizacion + interes;
-      saldo -= amortizacion;
-
-      this.rowData.push({
+      const cuota   = amortizacion + interes;
+      saldo        -= amortizacion;
+  
+      // construye la fila básica
+      const fila: any = {
         numCuota: i,
-        cuota: parseFloat(cuota.toFixed(2)),
-        interes: parseFloat(interes.toFixed(2)),
-        capital: parseFloat(amortizacion.toFixed(2)),
-        saldo: parseFloat(Math.max(saldo, 0).toFixed(2))
+        cuota:    parseFloat(cuota.toFixed(2)),
+        interes:  parseFloat(interes.toFixed(2)),
+        capital:  parseFloat(amortizacion.toFixed(2)),
+        saldo:    parseFloat(Math.max(saldo, 0).toFixed(2)),
+      };
+      let cuotaTotal = parseFloat(cuota.toFixed(2));
+      // añade dinámicamente cada cargo a la fila
+      this.chargesForCredit.forEach((charge, idx) => {
+        fila[`charge_${charge.id}`] = parseFloat(perPeriodCharges[idx].toFixed(2));
+        cuotaTotal += perPeriodCharges[idx];
       });
+      fila.cuotaTotal = parseFloat(cuotaTotal.toFixed(2));
+      this.rowData.push(fila);
     }
   }
+  
 
   calcularAmortizacionFrancesa(monto: number, tasaMensual: number, plazo: number) {
     let saldo = monto;
     this.rowData = [];
-
+     // Pre-cálculo de cargos por periodo
+     const perPeriodCharges = this.chargesForCredit.map(charge => {
+      const total = charge.isPercentage
+        ? monto * (charge.value / 100)
+        : charge.value;
+      return total / plazo;
+    });
     const cuota = monto * (tasaMensual * Math.pow(1 + tasaMensual, plazo)) /
                   (Math.pow(1 + tasaMensual, plazo) - 1);
 
@@ -200,13 +243,22 @@ export class TableComponent  implements OnInit {
       const capital = cuota - interes;
       saldo -= capital;
 
-      this.rowData.push({
+      // construye la fila básica
+      const fila: any = {
         numCuota: i,
-        cuota: parseFloat(cuota.toFixed(2)),
-        interes: parseFloat(interes.toFixed(2)),
-        capital: parseFloat(capital.toFixed(2)),
-        saldo: parseFloat(Math.max(saldo, 0).toFixed(2))
+        cuota:    parseFloat(cuota.toFixed(2)),
+        interes:  parseFloat(interes.toFixed(2)),
+        capital:  parseFloat(capital.toFixed(2)),
+        saldo:    parseFloat(Math.max(saldo, 0).toFixed(2)),
+      };
+      let cuotaTotal = parseFloat(cuota.toFixed(2));
+      // añade dinámicamente cada cargo a la fila
+      this.chargesForCredit.forEach((charge, idx) => {
+        fila[`charge_${charge.id}`] = parseFloat(perPeriodCharges[idx].toFixed(2));
+        cuotaTotal += perPeriodCharges[idx];
       });
+      fila.cuotaTotal = parseFloat(cuotaTotal.toFixed(2));
+      this.rowData.push(fila);
     }
   }
 
@@ -233,81 +285,45 @@ export class TableComponent  implements OnInit {
   }
 
   imprimirTabla() {
-    this.paginationEnabled = false;
-    const gridElement = this.agGridRef?.nativeElement;
+    // 1. Crea el documento
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'pt',
+      format: 'letter'
+    });
 
-    if (!gridElement) {
-      alert('No se encontró la tabla para imprimir.');
-      return;
-    }
+    // 2. Prepara headers (nombres de columnas)
+    const headers = this.colDefs.map(col => col.headerName);
 
-    const tablaHTML = gridElement.querySelector('.ag-root-wrapper')?.outerHTML;
+    // 3. Prepara filas (datos)
+    const data = this.rowData.map(row =>
+      this.colDefs.map(col => {
+        const value = row[col.field];
+        // Formatea números si lo deseas:
+        return typeof value === 'number'
+          ? value.toLocaleString('es-EC', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          : value;
+      })
+    );
 
-    if (!tablaHTML) {
-      alert('La tabla aún no ha terminado de renderizarse.');
-      return;
-    }
+    // 4. Genera la tabla en el PDF
+    autoTable(doc, {
+      head: [headers],
+      body: data,
+      startY: 40,
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [22, 160, 133] },
+      theme: 'grid'
+    });
 
-    // Datos del formulario
-    const { amount, term, termUnit, creditType } = this.creditForm.value;
-    const tasaAnual = this.tasa; // O toma tu tasa real si es dinámica
-    const tasaMensual = (tasaAnual / 12);
-    const credit: Credit = this.creditTypes.find(credit => credit.id === creditType)
-    const ventana = window.open('', '', 'width=1200,height=800');
-    if (ventana) {
-      ventana.document.write(`
-        <html>
-          <head>
-            <title>Tabla de Amortización - ${this.typeTable}</title>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-grid.css">
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community/styles/ag-theme-alpine.css">
-            <style>
-              @page {
-                size: landscape;
-                margin: 20mm;
-              }
-              body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 20px;
-              }
-              .ag-theme-alpine {
-                height: auto;
-                width: 100%;
-              }
-              h2 {
-                text-align: center;
-                margin-bottom: 20px;
-              }
-              .datos-creditos {
-                margin-bottom: 20px;
-                font-size: 16px;
-              }
-            </style>
-          </head>
-          <body>
-            <h2>Tabla de Amortización - ${this.typeTable}</h2>
-            <div class="datos-creditos">
-              <p><strong>Tipo de Crédito:</strong> ${creditType} - ${credit.name}</p>
-              <p><strong>Monto:</strong> $${Number(amount).toFixed(2)}</p>
-              <p><strong>Plazo:</strong> ${term} ${termUnit === 'years' ? 'años' : 'meses'}</p>
-              <p><strong>Tasa de Interés:</strong> ${termUnit ==='years' ? tasaAnual + '% anual' : tasaMensual.toFixed(2) +'% mensual'}</p>
-            </div>
-            <div class="ag-theme-alpine">
-              ${tablaHTML}
-            </div>
-          </body>
-        </html>
-      `);
-      ventana.document.close();
-      ventana.focus();
+    // 5. Añade un título
+    doc.setFontSize(14);
+    doc.text('Tabla de Amortización ' + this.typeTable, doc.internal.pageSize.getWidth() / 2, 20, {
+      align: 'center'
+    });
 
-      setTimeout(() => {
-        ventana.print();
-        ventana.close();
-      }, 1000);
-    }
-    this.paginationEnabled = true;
+    // 6. Guarda el PDF
+    doc.save(`tabla-amortizacion-${this.typeTable.toLowerCase()}.pdf`);
   }
 
   private async getCredits() {
@@ -326,6 +342,43 @@ export class TableComponent  implements OnInit {
       await toast.present();
     }
   }
+
+  private async getCreditCharge(id: Number) {
+    try {
+      const { data, error } = await this.supabase.getChargesForCredit(id);
+      if (error) throw error;
+      if (data) {
+        this.chargesForCredit = data;
+      }
+    } catch (err) {
+      const toast = await this.toastCtrl.create({
+        message: 'Error al cargar datos del crédito: '+ err.message,
+        duration: 2000,
+        color: 'danger'
+      });
+      await toast.present();
+    }
+  }
+
+  private buildChargeColumns() {
+    // Parte base
+    this.colDefs = [...this.baseColDefs];
+    // Si hay cargos, agrégalos
+    this.chargesForCredit.forEach(charge => {
+      this.colDefs.push({
+        field: `charge_${charge.id}`,
+        headerName: `Cargo: ${charge.name}`
+      });
+    });
+    // Ejemplo: cuota total si la necesitas siempre
+    this.colDefs.push({
+      field: 'cuotaTotal',
+      headerName: 'Cuota Total'
+    });
+  }
+  
+  
+  
 
   ngOnDestroy(): void {
     if (this.creditChannel) {
