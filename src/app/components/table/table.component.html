@@ -95,7 +95,7 @@
             </ion-item>
             <ion-text color="danger" *ngIf="creditForm.get('term').touched && creditForm.get('term').invalid">
               <p *ngIf="creditForm.get('termUnit').value !== 'years'" class="error-msg">Plazo inválido ({{this.minTime}}-{{ this.maxTime }}).</p>
-              <p *ngIf="creditForm.get('termUnit').value === 'years'" class="error-msg">Plazo inválido ({{this.minTime/12}}-{{ this.maxTime/12 }}).</p>
+              <p *ngIf="creditForm.get('termUnit').value === 'years'" class="error-msg">Plazo inválido ({{this.minTime/12 | number:'1.1-1'}}-{{ this.maxTime/12 | number:'1.1-1' }}).</p>
             </ion-text>
           </ion-col>
         </ion-row>

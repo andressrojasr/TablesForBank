@@ -66,6 +66,28 @@ export class SupabaseService {
     return { data, error };
   }
 
+  async getChargesForCredit(id: Number)
+    : Promise<{ data?: Charge[]; error?: PostgrestError }> {
+
+    const { data, error } = await this.supabase
+      .from('credito_cobro')
+      .select('charges(*)')
+      .eq('credito_id', id);
+
+    if (error) {
+      return { error };
+    }
+    if (!data) {
+      return { data: [] };
+    }
+
+    const charges: Charge[] = data
+      .map(row => row.charges)    
+      .flat();                  
+    return { data: charges };
+  }
+
+
   subscribeToCreditChanges(callback: (payload: any) => void) {
     const channel = this.supabase.channel('public:credits');
 
