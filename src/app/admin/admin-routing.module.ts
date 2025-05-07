@@ -21,6 +21,10 @@ const routes: Routes = [
         loadChildren:() => import('../admin-cobros/admin-cobros.module').then(m => m.AdminCobrosPageModule)
       },
       {
+        path: 'inversiones',
+        loadChildren: () => import('../admin-inversiones/admin-inversiones.module').then(m => m.AdminInversionesPageModule)
+      },
+      {
         path:'',
         redirectTo:'institucion',
         pathMatch:'full'

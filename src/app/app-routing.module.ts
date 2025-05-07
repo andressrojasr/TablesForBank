@@ -19,12 +19,12 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.module').then( m => m.AdminPageModule),
-    canActivate: [AuthGuard]
+    canActivate: []
   },
   {
     path: 'admin-institucion',
     loadChildren: () => import('./admin-institucion/admin-institucion.module').then( m => m.AdminInstitucionPageModule),
-    canActivate: [AuthGuard]
+    canActivate: []
 
   },
   {
@@ -35,6 +35,10 @@ const routes: Routes = [
     path: 'admin-cobros',
     loadChildren: () => import('./admin-cobros/admin-cobros.module').then( m => m.AdminCobrosPageModule)
   },
+  {
+    path: 'admin-inversiones',
+    loadChildren: () => import('./admin-inversiones/admin-inversiones.module').then( m => m.AdminInversionesPageModule)
+  }
 
 ];
 
