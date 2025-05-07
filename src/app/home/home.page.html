@@ -12,6 +12,21 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <!-- Contenido vacío por el momento -->
+<ion-content class="content-bg">
+  <ion-segment>
+    <ion-segment-button value="credits" content-id="credits">
+      <ion-label>Créditos</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="investments" content-id="investments">
+      <ion-label>Inversiones</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+  <ion-segment-view>
+    <ion-segment-content id="credits">
+      <app-table></app-table>
+    </ion-segment-content>
+    <ion-segment-content id="investments">
+      <app-investments></app-investments>
+    </ion-segment-content>
+  </ion-segment-view>
 </ion-content>

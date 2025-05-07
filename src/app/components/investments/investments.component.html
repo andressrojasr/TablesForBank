@@ -1,0 +1,125 @@
+<div class="deposit-page">
+  <div class="page-container">
+    
+    <!-- Título y descripción -->
+    <div class="hero">
+      <h1>Simulador de inversiones</h1>
+      <p *ngIf="!loading">
+        Elija el tipo de inversión que mejor se adapte a sus necesidades financieras.
+      </p>
+      <p *ngIf="loading">Cargando datos de inversión...</p>
+      <div class="container-img">
+        <img src="https://segurosypensionesparatodos.fundacionmapfre.org/media/inversion/riesgos-inversion-1194x535-1.png" alt="">
+      </div>
+    </div>
+
+    <!-- Contenedor del simulador -->
+    <div class="calculator-container">
+      <ion-card class="calculator-card">
+        <ion-card-content>
+          
+          <!-- Selector de tipo de inversión -->
+          <div class="section" *ngIf="tiposInversion.length > 0">
+            <h2>Tipo de inversión</h2>
+            <ion-item>
+              <ion-select 
+                [(ngModel)]="tipoInversionSeleccionado" 
+                (ionChange)="onTipoInversionChange()"
+                aria-label="Tipo de inversión"
+              >
+                <ion-select-option 
+                  *ngFor="let tipo of tiposInversion" 
+                  [value]="tipo"
+                >
+                  {{ tipo.investment_type }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </div>
+
+          <!-- Monto de inversión -->
+          <div class="section" *ngIf="tipoInversionSeleccionado">
+            <h2>Monto de inversión</h2>
+            <div class="amount-display">
+              <ion-item lines="none">
+                <ion-label position="stacked">Ingrese monto</ion-label>
+                <ion-input
+                  type="number"
+                  placeholder="00.00"
+                  [(ngModel)]="monto"
+                  (ionInput)="onMontoChange()"
+                  [min]="tipoInversionSeleccionado.min_amount"
+                  [max]="tipoInversionSeleccionado.max_amount"
+                ></ion-input>
+              </ion-item>
+            </div>
+            <p class="hint">
+              Rango permitido: 
+              {{ tipoInversionSeleccionado.min_amount | currency:'USD':'symbol':'1.2-2' }} - 
+              {{ tipoInversionSeleccionado.max_amount | currency:'USD':'symbol':'1.2-2' }}
+            </p>
+          </div>
+
+          <!-- Plazo -->
+          <div class="section" *ngIf="tipoInversionSeleccionado">
+            <h2>Plazo del depósito</h2>
+            <ion-segment [(ngModel)]="modoPlazo" (ionChange)="onModoChange()" class="segment">
+              <ion-segment-button value="meses">Meses</ion-segment-button>
+              <ion-segment-button value="dias">Días</ion-segment-button>
+            </ion-segment>
+
+            <p class="sub-label">Elige el plazo en {{ modoPlazo }}</p>
+            <ion-item lines="none">
+              <ion-input
+                *ngIf="modoPlazo === 'meses'"
+                type="number"
+                placeholder="Meses"
+                [(ngModel)]="plazoMeses"
+                (ionInput)="onPlazoChange()"
+                [min]="minMeses"
+                [max]="maxMeses"
+              ></ion-input>
+              <ion-input
+                *ngIf="modoPlazo === 'dias'"
+                type="number"
+                placeholder="Días"
+                [(ngModel)]="plazoDias"
+                (ionInput)="onPlazoChange()"
+                [min]="minDias"
+                [max]="maxDias"
+              ></ion-input>
+            </ion-item>
+            <p class="hint">
+              Rango permitido: {{ rangoPlazoTexto }}
+            </p>
+          </div>
+
+          <!-- Resultado de la simulación -->
+          <div class="section result-section" *ngIf="ganancia !== null && tipoInversionSeleccionado">
+            <h2>El resultado de tu simulación:</h2>
+            <ion-card class="result-card">
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>
+                    <div class="result-header">
+                      {{ tipoInversionSeleccionado.investment_type }} | 
+                      En {{ plazoSeleccionado }} | 
+                      Tasa {{ tipoInversionSeleccionado.interest_rate | number:'1.2-2' }}%
+                    </div>
+                    <div class="ganancia">
+                      Ganas: {{ ganancia | currency:'USD':'symbol':'1.2-2' }}
+                    </div>
+                    <div>
+                      Recibes al final: {{ (monto + ganancia) | currency:'USD':'symbol':'1.2-2' }}
+                    </div>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-card>
+          </div>
+
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</div>

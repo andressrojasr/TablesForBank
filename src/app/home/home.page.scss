@@ -3,3 +3,30 @@
   height: 40px;
   margin-left: 25px;
 }
+
+.toolbar-gradient {
+  --background: linear-gradient(135deg, #0066cc, #00cc99);
+  color: #fff;
+}
+
+
+.header-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.login-btn {
+  --border-radius: 20px;
+  --background: rgba(255,255,255,0.2);
+  color: #fff;
+  margin-right: 25px;
+}
+
+.content-bg {
+  display: flex;
+  justify-content: center;  /* Centra horizontalmente */
+  align-items: center;     /* Centra verticalmente */
+  background-color: #e5edf3;
+  padding: 20px 0;         /* Espaciado superior e inferior */
+  height: 100%;            /* Occupy full height for vertical centering */
+}

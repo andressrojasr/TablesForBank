@@ -1,0 +1,20 @@
+.tab-button:hover,.tab-button:active, .tab-button:visited{
+  background-color: rgb(8, 184, 184);
+}
+.tab-button:hover{
+  color: black;
+}
+tab.active{
+  background-color: rgb(5, 181, 181);
+  color: black;
+}
+tab.focus{
+  background-color: rgb(5, 181, 181);
+  color: black;
+}
+
+ion-tab-bar {
+  --ion-tab-bar-color-selected: rgb(64, 90, 121);
+}
+
+

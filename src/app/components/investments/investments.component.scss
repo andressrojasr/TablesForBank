@@ -1,0 +1,146 @@
+.deposit-page {
+    --ion-background-color: #f0f8ff;
+    padding: 0;
+    display: flex;
+  }
+  
+  .page-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 16px;
+    gap: 32px;
+    padding-bottom: 50px;
+  }
+  
+  .hero, .calculator-container {
+    background: transparent;
+  }
+  
+  @media(min-width: 768px) {
+    .page-container {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    .hero, .calculator-container {
+      flex: 1;
+    }
+    .calculator-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+  
+  .hero h1 {
+    font-size: 2rem;
+    color: #06356f;
+    margin-bottom: 8px;
+  }
+  .hero p {
+    margin-bottom: 16px;
+    color: #333;
+  }
+  .btn-invest {
+    --background: #ffd400;
+    --color: #06356f;
+    margin-bottom: 24px;
+    max-width: 200px;
+  }
+  .hero-image {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .calculator-card {
+    width: 100%;
+    max-width: 400px;
+    height: 100%;
+    overflow-y: auto;
+  }
+  .section {
+   
+    margin-bottom: 24px;
+  }
+  .amount-display h3 {
+    font-size: 2rem;
+    text-align: center;
+    margin: 8px 0;
+  }
+  .hint {
+    font-size: 0.85rem;
+    color: #666;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .segment {
+    margin: 8px 0 16px;
+  }
+  .sub-label {
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .result-section h2 {
+    margin-bottom: 16px;
+  }
+  .result-card {
+    --ion-background-color: #ffffff;
+    border: 1px solid #06356f;
+    border-radius: 8px;
+  }
+  .result-header {
+    font-size: 0.9rem;
+    color: #06356f;
+    margin-bottom: 4px;
+  }
+  .ganancia {
+    color: #28a745;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+  }
+
+  ion-select {
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --background: #f8f9fa;
+    --border-radius: 10px;
+    --color: #212529;
+    --placeholder-color: #6c757d;
+    --placeholder-opacity: 1;
+    --min-height: 45px;
+    --border: 1px solid #ced4da;
+    --box-shadow: none;
+    font-size: 16px;
+  }
+  
+  ion-item {
+    --background: transparent;
+    --border-color: transparent;
+    --inner-border-width: 0;
+    --highlight-color-focused: #0d6efd; // color azul al enfocar
+    --min-height: 60px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    padding: 4px;
+  }
+  
+  ion-select::part(text) {
+    color: #212529;
+  }
+  
+  ion-select::part(placeholder) {
+    color: #6c757d;
+  }
+  .container-img{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  img{
+    max-width: 160%;
+    height: auto;
+    border-radius: 12px;
+  }

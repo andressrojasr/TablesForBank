@@ -1,0 +1,43 @@
+<ion-content class="ion-padding">
+  <ng-container *ngFor="let field of formConfig">
+    <ion-item *ngIf="field.type !== 'toggle' && field.type !== 'select-multiple'">
+      <ion-label position="floating">{{ field.label }}</ion-label>
+
+      <ion-input
+        *ngIf="field.type !== 'textarea'"
+        [type]="field.type === 'number' ? 'text' : field.type"
+        [(ngModel)]="editData[field.field]"
+        name="{{field.field}}"
+        [inputmode]="field.type === 'number' ? 'decimal' : 'text'"
+        (ionInput)="field.type === 'number' ? validarCampoNumerico($event, field.field) : validarCampoTexto($event, field.field)"
+        (keydown)="field.type === 'number' ? restringirTeclas($event, field.field) : null">
+      </ion-input>
+
+      <ion-textarea
+        *ngIf="field.type === 'textarea'"
+        [(ngModel)]="editData[field.field]"
+        name="{{field.field}}">
+      </ion-textarea>
+    </ion-item>
+
+    <ion-text color="danger" *ngIf="erroresCampos[field.field]">
+      <p class="ion-padding-start">{{ erroresCampos[field.field] }}</p>
+    </ion-text>
+
+    <ion-item *ngIf="field.type === 'select-multiple'">
+      <ion-label>{{ field.label }}</ion-label>
+      <ion-select [(ngModel)]="editData[field.field]" name="{{field.field}}" multiple="true">
+        <ion-select-option *ngFor="let opcion of field.options" [value]="opcion.value">
+          {{ opcion.label }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="field.type === 'toggle'">
+      <ion-label>{{ field.label }}</ion-label>
+      <ion-toggle slot="end" [(ngModel)]="editData[field.field]" name="{{field.field}}" (ionChange)="toggleChanged()"></ion-toggle>
+    </ion-item>
+  </ng-container>
+
+  <ion-button expand="block" color="success" (click)="guardar()" [disabled]="tieneErrores()">Guardar</ion-button>
+</ion-content>

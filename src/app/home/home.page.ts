@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NavController, ToastController } from '@ionic/angular';
 import { SupabaseService } from '../services/supabase.service';
 import { Bank } from '../models/bank.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -18,8 +19,10 @@ export class HomePage {
   name: string = 'name of bank';
   logo: string = 'logo of bank';
 
+
+
   private bankChannel: any;
-  
+
   constructor() {}
 
   ngOnInit() {
@@ -30,6 +33,9 @@ export class HomePage {
         this.applyBankInfo(payload.new);
       }
     });
+
+
+
   }
 
   onLogin() {
@@ -59,7 +65,7 @@ export class HomePage {
         this.bankChannel.unsubscribe();
       }
     }
-  
+
     private applyBankInfo(bank: Bank) {
       this.name = bank.name;
       this.logo = bank.logo;

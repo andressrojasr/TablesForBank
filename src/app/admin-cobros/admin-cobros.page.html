@@ -1,0 +1,46 @@
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administrar Cobros Indirectos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-button expand="block" (click)="abrirModalAgregar()">Agregar Cobro Indirecto</ion-button>
+
+  <ion-list>
+    <ion-item *ngFor="let cobro of cobrosIndirectos; let i = index">
+      <ion-label (click)="verDetalle(cobro)" class="clickable">
+        {{ cobro.name }}
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button  color="secondary" (click)="editar(cobro)">Editar</ion-button>
+        <ion-button color="danger" (click)="eliminar(i)">Eliminar</ion-button>
+      </ion-buttons>
+
+
+      <ng-template #vistaNormal>
+        <ion-label (click)="verDetalle(cobro)" class="clickable">
+          {{ cobro.name }} -
+          {{ cobro.isPercentage ? (cobro.value + '%') : ('$' + cobro.value) }}
+        </ion-label>
+        <ion-buttons slot="end">
+          <ion-button (click)="editar(cobro)">Editar</ion-button>
+          <ion-button color="danger" (click)="eliminar(i)">Eliminar</ion-button>
+        </ion-buttons>
+      </ng-template>
+    </ion-item>
+  </ion-list>
+
+  <ion-card *ngIf="selectedCobro" class="ion-margin-top">
+    <ion-card-header>
+      <ion-card-title>{{ selectedCobro.name }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Tipo:</strong> {{ selectedCobro.isPercentage ? 'Porcentaje' : 'Monto fijo' }}</p>
+      <p><strong>Valor:</strong> {{ selectedCobro.value }}</p>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
