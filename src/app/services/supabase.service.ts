@@ -11,6 +11,7 @@ import { Charge } from '../models/charge';
 export class SupabaseService {
 
   private supabase: SupabaseClient
+  public currentUserRole : string | null = null;
 
   constructor() {
     this.supabase = createClient(
@@ -82,8 +83,8 @@ export class SupabaseService {
     }
 
     const charges: Charge[] = data
-      .map(row => row.charges)    
-      .flat();                  
+      .map(row => row.charges)
+      .flat();
     return { data: charges };
   }
 
@@ -228,6 +229,10 @@ async getCobrosForCredit(creditId: number): Promise<any[]> {
   const cobros = await Promise.all(cobrosDetallesPromises);
 
   return cobros.filter(cobro => cobro !== null);
+}
+
+getClient() {
+  return this.supabase;
 }
 
 // Metodos Inversiones

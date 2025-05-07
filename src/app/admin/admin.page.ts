@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SupabaseService } from '../services/supabase.service';
 
 @Component({
   selector: 'app-admin',
@@ -8,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 
 })
 export class AdminPage implements OnInit {
-
-  constructor() { }
-
+  canEditInstitution = false;
+  canCreateAsesores = false;
+  constructor(private supabase: SupabaseService) {
+    const rol = this.supabase.currentUserRole;
+    this.canEditInstitution = rol === 'admin';
+    this.canCreateAsesores = rol === 'admin';
+  }
   ngOnInit() {
   }
 

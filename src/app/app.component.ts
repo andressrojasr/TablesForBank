@@ -70,6 +70,6 @@ export class AppComponent {
       link.setAttribute('rel', 'icon');
       document.head.appendChild(link);
     }
-    link.href = logoUrl;  // Asigna la URL del logo proveniente de Supabase :contentReference[oaicite:6]{index=6}
+    link.href = logoUrl;
   }
 }

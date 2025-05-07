@@ -95,40 +95,45 @@ export class AgregarModalComponent implements OnInit {
 }
 
 validarCampoNumerico(event: any, campo: string) {
-    let valor = event.target.value;
-    const esEntero = campo === 'minTime' || campo === 'maxTime';
+  let valor = event.target.value;
+  let mensajeError = '';
 
-    if (esEntero) {
-      valor = valor.replace(/[^0-9]/g, '');
-    } else {
-      valor = valor.replace(/[^0-9.]/g, '');
+  const esEntero = campo === 'minTime' || campo === 'maxTime';
 
-      const partes = valor.split('.');
-      if (partes.length > 2) {
-        valor = partes[0] + '.' + partes[1]; // ignora puntos adicionales
-      }
+  if (esEntero) {
+    valor = valor.replace(/[^0-9]/g, '');
+  } else {
+    valor = valor.replace(/[^0-9.]/g, '');
 
-      if (partes.length === 2 && partes[1].length > 3) {
-        partes[1] = partes[1].substring(0, 3);
-        valor = partes[0] + '.' + partes[1];
-      }
+    const partes = valor.split('.');
+    if (partes.length > 2) {
+      valor = partes[0] + '.' + partes[1];
     }
 
-    if (valor === '' || valor === '0' || valor === '0.0' || valor === '0.00' || valor === '0.000') {
-      this.erroresCampos[campo] = 'El valor no puede ser cero ni vacío.';
-    } else {
-      this.erroresCampos[campo] = '';
+    if (partes.length === 2 && partes[1].length > 3) {
+      partes[1] = partes[1].substring(0, 3);
+      valor = partes[0] + '.' + partes[1];
     }
-    if (!valor || parseFloat(valor) === 0) {
-      this.erroresCampos[campo] = 'El valor no puede ser cero ni vacío.';
-    } else {
-      this.erroresCampos[campo] = '';
+  }
+
+  if (campo === 'value' && this.formData['isPercentage']) {
+    const numero = parseFloat(valor);
+    if (isNaN(numero) || numero < 1 || numero > 100) {
+      console.log('El valor debe ser un número entre 1 y 100.');
+      mensajeError = 'Debe ser un valor entre 1 y 100 si es porcentaje.';
     }
+  }
 
-    this.formData[campo] = valor;
+  if (!mensajeError && (!valor || parseFloat(valor) === 0 || valor === '0.0' || valor === '0.00' || valor === '0.000')) {
+    mensajeError = 'El valor no puede ser cero ni vacío.';
+  }
 
-    this.validarRelacionCampos();
+  this.erroresCampos[campo] = mensajeError;
+  this.formData[campo] = valor;
+
+  this.validarRelacionCampos();
 }
+
 
 
 validarRelacionCampos() {
@@ -229,4 +234,8 @@ validarRelacionCampos() {
   tieneErrores(): boolean {
     return Object.values(this.erroresCampos).some(msg => msg !== '');
   }
+  toggleChanged() {
+    this.validarCampoNumerico({ target: { value: this.formData['value'] } }, 'value');
+  }
+
 }

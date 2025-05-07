@@ -26,7 +26,7 @@ const routes: Routes = [
       },
       {
         path:'',
-        redirectTo:'institucion',
+        redirectTo:'creditos',
         pathMatch:'full'
       }
     ],
