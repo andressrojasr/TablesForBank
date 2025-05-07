@@ -30,7 +30,6 @@ export class RegistroAsesoresPage {
   async onRegistrarAsesor() {
     const { email, password, nombre } = this.asesorForm.value;
 
-    // 1. Registrar al asesor en auth
     const { data: signUpData, error: signUpError } = await this.supabase.getClient().auth.signUp({
       email,
       password
@@ -47,7 +46,6 @@ export class RegistroAsesoresPage {
       return;
     }
 
-    // 2. Insertar en la tabla usuarios con rol 'asesor'
     const { error: insertError } = await this.supabase.getClient().from('usuarios').insert({
       id: userId,
       nombre,

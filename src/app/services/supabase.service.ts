@@ -232,14 +232,8 @@ async getCobrosForCredit(creditId: number): Promise<any[]> {
 }
 
 getClient() {
-  return this.supabase; // o como hayas nombrado tu instancia de Supabase
+  return this.supabase;
 }
-
-
-getClient() {
-  return this.supabase; // o como hayas nombrado tu instancia de Supabase
-}
-
 
 // Metodos Inversiones
 async getInvestments(): Promise<{ data?: any[], error?: any }> {

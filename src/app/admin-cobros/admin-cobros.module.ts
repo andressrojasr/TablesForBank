@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -13,8 +13,10 @@ import { AdminCobrosPage } from './admin-cobros.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    AdminCobrosPageRoutingModule
+    AdminCobrosPageRoutingModule,
   ],
-  declarations: [AdminCobrosPage]
+  declarations: [AdminCobrosPage],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+
 })
 export class AdminCobrosPageModule {}

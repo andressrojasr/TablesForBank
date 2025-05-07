@@ -18,13 +18,12 @@ const routes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.module').then(m => m.AdminPageModule),
-    // canActivate: [AuthGuard] // opcional si ya manejas sesión
   },
   {
     path: 'registro-asesores',
     loadChildren: () => import('./registro-asesores/registro-asesores.module').then(m => m.RegistroAsesoresPageModule),
-    // canActivate: [AdminGuard] // solo si manejas guard específico para admin
   },
+
 ];
 
 

@@ -11,43 +11,29 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-tabs>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">admin</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <ion-tabs>
-    <!-- Aquí va el outlet para las rutas hijas -->
-    <ion-router-outlet></ion-router-outlet>
-
-    <ion-tab-bar slot="bottom">
-      <ng-container *ngIf="canEditInstitution">
-        <ion-tab-button tab="institucion">
-          <ion-icon name="business-outline"></ion-icon>
-          <ion-label>Configurar institución</ion-label>
-        </ion-tab-button>
-      </ng-container>
-
-      <ion-tab-button tab="creditos">
-        <ion-icon name="cash-outline"></ion-icon>
-        <ion-label>Configurar créditos</ion-label>
+  <ion-tab-bar slot="bottom">
+    <ng-container *ngIf="canEditInstitution">
+      <ion-tab-button tab="institucion">
+        <ion-icon name="business-outline"></ion-icon>
+        <ion-label>Configurar institución</ion-label>
       </ion-tab-button>
+    </ng-container>
 
-      <ion-tab-button tab="cobros">
-        <ion-icon name="receipt-outline"></ion-icon>
-        <ion-label>Configurar cobros</ion-label>
-      </ion-tab-button>
+    <ion-tab-button tab="creditos">
+      <ion-icon name="cash-outline"></ion-icon>
+      <ion-label>Configurar créditos</ion-label>
+    </ion-tab-button>
 
-      <ion-tab-button class="tab-button" tab="inversiones">
-        <ion-icon name="trending-up-outline"></ion-icon>
-        <ion-label>Inversiones</ion-label>
-      </ion-tab-button>
+    <ion-tab-button tab="cobros">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <ion-label>Configurar cobros</ion-label>
+    </ion-tab-button>
 
-    </ion-tab-bar>
-  </ion-tabs>
-
-
-</ion-content>
+    <ion-tab-button tab="inversiones">
+      <ion-icon name="trending-up-outline"></ion-icon>
+      <ion-label>Inversiones</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
