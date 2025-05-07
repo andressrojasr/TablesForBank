@@ -52,7 +52,10 @@ export class LoginPage implements OnInit {
 
   async onLogin() {
     const { email, password } = this.loginForm.value;
-    const { data, error } = await this.supabase.login(email, password);
+
+    // 1. Iniciar sesión
+    const { data: loginData, error } = await this.supabase.login(email, password);
+
     if (error) {
       const toast = await this.toastCtrl.create({
         message: error.message,
@@ -60,17 +63,62 @@ export class LoginPage implements OnInit {
         color: 'danger'
       });
       await toast.present();
+      return;
+    }
+
+    // 2. Obtener el ID del usuario autenticado
+    const userId = loginData.user?.id;
+
+    if (!userId) {
+      const toast = await this.toastCtrl.create({
+        message: 'No se pudo obtener el usuario autenticado.',
+        duration: 2000,
+        color: 'danger'
+      });
+      await toast.present();
+      return;
+    }
+
+    // 3. Consultar el rol del usuario desde la tabla `usuarios`
+    const { data: userData, error: userError } = await this.supabase
+      .getClient()
+      .from('usuarios')
+      .select('rol')
+      .eq('id', userId)
+      .single();
+
+    if (userError || !userData) {
+      const toast = await this.toastCtrl.create({
+        message: 'No se pudo obtener el rol del usuario.',
+        duration: 2000,
+        color: 'danger'
+      });
+      await toast.present();
+      return;
+    }
+
+    const rol = userData.rol;
+    this.supabase.currentUserRole = rol;
+
+    // 4. Redirigir según el rol
+    if (rol === 'admin') {
+      this.navCtrl.navigateRoot('/admin/creditos'); // ✅ Ruta hija directa
+    } else if (rol === 'asesor') {
+      this.navCtrl.navigateRoot('/admin/creditos'); // o también puede ir a 'cobros'
+
     } else {
-      this.navCtrl.navigateRoot('/admin');
+      const toast = await this.toastCtrl.create({
+        message: 'Rol no válido.',
+        duration: 2000,
+        color: 'danger'
+      });
+      await toast.present();
     }
   }
 
+
   onForgot() {
     this.navCtrl.navigateForward('/forgot-password');
-  }
-
-  onRegister() {
-    this.navCtrl.navigateForward('/register');
   }
 
   private async getData() {

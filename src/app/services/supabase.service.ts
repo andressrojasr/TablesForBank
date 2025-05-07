@@ -11,6 +11,7 @@ import { Charge } from '../models/charge';
 export class SupabaseService {
 
   private supabase: SupabaseClient
+  public currentUserRole : string | null = null;
 
   constructor() {
     this.supabase = createClient(
@@ -207,6 +208,11 @@ async getCobrosForCredit(creditId: number): Promise<any[]> {
 
   return cobros.filter(cobro => cobro !== null);
 }
+
+getClient() {
+  return this.supabase; // o como hayas nombrado tu instancia de Supabase
+}
+
 
 
 

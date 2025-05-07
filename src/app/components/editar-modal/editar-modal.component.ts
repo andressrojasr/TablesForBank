@@ -59,18 +59,18 @@ export class EditarModalComponent implements OnInit {
       return;
     }
 
-    if (this.editData['minCredit'] || this.editData['minTime']){
+    if (this.editData['minCredit'] || this.editData['minTime']) {
+      if (!this.editData['minCredit'] || this.editData['minCredit'] === '0') {
+        this.erroresCampos['minCredit'] = 'El campo no puede ser cero.';
+        return;
+      }
 
-    if (!this.editData['minCredit'] || this.editData['minCredit'] === '0') {
-      this.erroresCampos['minCredit'] = 'El campo no puede ser cero.';
-      return;
+      if (!this.editData['minTime'] || this.editData['minTime'] === '0') {
+        this.erroresCampos['minTime'] = 'El campo no puede ser cero.';
+        return;
+      }
     }
 
-    if (!this.editData['minTime'] || this.editData['minTime'] === '0') {
-      this.erroresCampos['minTime'] = 'El campo no puede ser cero.';
-      return;
-    }
-  }
     for (let campo in this.editData) {
       if (typeof this.editData[campo] === 'string' && parseFloat(this.editData[campo]) === 0) {
         this.erroresCampos[campo] = `El campo no puede ser cero`;
@@ -79,11 +79,10 @@ export class EditarModalComponent implements OnInit {
     }
 
     const camposVacios = this.formConfig.some(campo => {
-      if (campo.type === 'select-multiple') return false; // no obligatorio
+      if (campo.type === 'select-multiple') return false;
       const valor = this.editData[campo.field];
       return valor === null || valor === undefined || valor.toString().trim() === '';
     });
-
 
     if (camposVacios || this.tieneErrores()) {
       const toast = await this.toastController.create({
@@ -155,13 +154,14 @@ export class EditarModalComponent implements OnInit {
   validarCampoNumerico(event: any, campo: string) {
     let valor = event.target.value;
     const esEntero = this.camposEnteros.includes(campo);
+    let mensajeError = '';
 
     if (esEntero) {
       valor = valor.replace(/[^0-9]/g, '');
     } else {
       valor = valor.replace(/[^0-9.]/g, '');
-
       const partes = valor.split('.');
+
       if (partes.length > 2) {
         valor = partes[0] + '.' + partes[1];
       }
@@ -172,13 +172,20 @@ export class EditarModalComponent implements OnInit {
       }
     }
 
-    this.editData[campo] = valor;
-
-    if (!valor || parseFloat(valor) === 0) {
-      this.erroresCampos[campo] = 'El valor no puede ser cero ni vacío.';
-    } else {
-      this.erroresCampos[campo] = '';
+    if (!valor || parseFloat(valor) === 0 || valor === '0.0' || valor === '0.00' || valor === '0.000') {
+      mensajeError = 'El valor no puede ser cero ni vacío.';
     }
+
+    if (campo === 'value' && this.editData['isPercentage']) {
+      const numero = parseFloat(valor);
+      if (isNaN(numero) || numero < 1 || numero > 100) {
+        console.log('El valor debe ser un número entre 1 y 100.');
+        mensajeError = 'Debe ser un valor entre 1 y 100 si es porcentaje.';
+      }
+    }
+
+    this.editData[campo] = valor;
+    this.erroresCampos[campo] = mensajeError;
 
     this.validarRelacionCampos();
   }
@@ -187,7 +194,7 @@ export class EditarModalComponent implements OnInit {
     const tecla = event.key;
     const esEntero = this.camposEnteros.includes(campo);
 
-    if (['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(tecla)) return;
+    if (["Backspace", "Tab", "ArrowLeft", "ArrowRight", "Delete"].includes(tecla)) return;
 
     const input = event.target as HTMLInputElement;
     const valorActual = input.value;
@@ -227,6 +234,7 @@ export class EditarModalComponent implements OnInit {
         event.preventDefault();
       }
     }
+
   }
 
   validarRelacionCampos() {
@@ -252,8 +260,10 @@ export class EditarModalComponent implements OnInit {
     }
   }
 
-
   tieneErrores(): boolean {
     return Object.values(this.erroresCampos).some(msg => msg !== '');
+  }
+  toggleChanged() {
+    this.validarCampoNumerico({ target: { value: this.editData['value'] } }, 'value');
   }
 }

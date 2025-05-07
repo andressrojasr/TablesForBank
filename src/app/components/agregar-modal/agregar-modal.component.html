@@ -48,8 +48,9 @@
 
       <ion-item *ngIf="campo.type === 'toggle'">
         <ion-label>{{ campo.label }}</ion-label>
-        <ion-toggle slot="end" [(ngModel)]="formData[campo.field]" name="{{campo.field}}"></ion-toggle>
+        <ion-toggle slot="end" [(ngModel)]="formData[campo.field]" name="{{campo.field}}"  (ionChange)="toggleChanged()"></ion-toggle>
       </ion-item>
+
 
     </ng-container>
 
